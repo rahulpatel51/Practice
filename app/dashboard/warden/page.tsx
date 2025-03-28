@@ -342,7 +342,6 @@ export default function WardenDashboard() {
               </div>
             </div>
           </TabsContent>
-        </TabsContent>
       </Tabs>
     </div>
   </DashboardLayout>
