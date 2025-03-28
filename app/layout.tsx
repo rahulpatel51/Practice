@@ -19,12 +19,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        {children}
-        <Toaster />
+      <body className={inter.className + " dark:bg-gray-900 dark:text-gray-50"}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )
 }
+
+
 
 import './globals.css'
