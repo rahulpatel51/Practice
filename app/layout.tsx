@@ -10,7 +10,6 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Hostel Management System",
   description: "A comprehensive hostel management system for educational institutions",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
