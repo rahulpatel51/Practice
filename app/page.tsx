@@ -9,38 +9,41 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
       {/* Header */}
       <header className="bg-gray-950 border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="relative h-8 w-8">
-              <Image 
-                src="/logo.png" 
-                alt="Goel Group Of Institutions Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-              Goel Group Of Institutions
-            </h1>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
-              Features
-            </Link>
-            <Link href="#about" className="text-gray-300 hover:text-white transition-colors">
-              About
-            </Link>
-            <Link href="#contact" className="text-gray-300 hover:text-white transition-colors">
-              Contact
-            </Link>
-          </nav>
-          <Link href="/login">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-lg shadow-blue-500/20">
-              Login
-            </Button>
-          </Link>
-        </div>
-      </header>
+  <div className="container mx-auto px-4 py-4 flex items-center">
+    {/* Logo and Institution Name - Left Side */}
+    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity mr-auto">
+      <div className="relative h-8 w-8">
+        <Image 
+          src="/logo.png" 
+          alt="Goel Group Of Institutions Logo"
+          fill
+          className="object-contain"
+        />
+      </div>
+      <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+        Goel Group Of Institutions
+      </h1>
+    </Link>
+
+    {/* Navigation - Centered */}
+    <nav className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
+      <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+        Features
+      </Link>
+      <Link href="#about" className="text-gray-300 hover:text-white transition-colors">
+        About
+      </Link>
+      <Link href="#contact" className="text-gray-300 hover:text-white transition-colors">
+        Contact
+      </Link>
+    </nav>
+    <Link href="/login" className="ml-auto">
+      <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-lg shadow-blue-500/20">
+        Login
+      </Button>
+    </Link>
+  </div>
+</header>
 
       {/* Hero Section */}
       <section className="py-16 md:py-24">
