@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GraduationCap, LogOut, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Image from "next/image";
 
 interface NavItem {
   href: string;
@@ -63,20 +64,44 @@ export function DashboardLayout({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 flex flex-col">
       {/* Mobile Header - Fixed at top */}
-      <header className="md:hidden bg-white dark:bg-slate-800 border-b p-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <GraduationCap className={`h-6 w-6 ${colors.primary} text-white rounded-full p-1`} />
-          <h1 className="text-xl font-bold">Hostel Management</h1>
+      <header className="md:hidden bg-white dark:bg-slate-800 border-b p-3 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <div className="relative h-8 w-8">
+            <Image
+              src="/logo.png"
+              alt="Goel Group Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <h1 className="font-bold text-[15px]">Goel Group Of Institution</h1>
+            <p className="text-xs text-muted-foreground">Hostel Management</p>
+          </div>
         </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72 p-0">
             <div className="h-full flex flex-col">
               <div className="p-6 flex flex-col items-center border-b">
+                <div className="mb-4 flex flex-col items-center">
+                  <div className="relative h-12 w-12 mb-2">
+                    <Image
+                      src="/goel-group-logo.png"
+                      alt="Goel Group Logo"
+                      width={48}
+                      height={48}
+                      className="object-contain"
+                    />
+                  </div>
+                  <h2 className="text-lg font-semibold">Goel Group Of Institution</h2>
+                  <p className="text-sm text-muted-foreground">Hostel Management</p>
+                </div>
                 <Avatar className="h-20 w-20 mb-4">
                   <AvatarImage src={userAvatar} alt={userName} />
                   <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
@@ -148,10 +173,23 @@ export function DashboardLayout({
         {/* Desktop Sidebar */}
         <aside className={`hidden md:flex flex-col bg-white dark:bg-slate-800 border-r ${colors.border} w-64 h-screen sticky top-0`}>
           <div className="flex flex-col h-full">
-            {/* Logo Section */}
-            <div className="flex items-center gap-2 p-6 pb-4">
-              <GraduationCap className={`h-6 w-6 ${colors.primary} text-white rounded-full p-1`} />
-              <h1 className="text-xl font-bold">Hostel Management</h1>
+            {/* Institution Branding Section */}
+            <div className="p-4 border-b">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10">
+                  <Image
+                    src="/logo.png"
+                    alt="Goel Group Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold leading-tight">Goel Group Of Institution</h1>
+                  <p className="text-xs text-muted-foreground">Hostel Management System</p>
+                </div>
+              </div>
             </div>
 
             {/* User Profile Section */}
