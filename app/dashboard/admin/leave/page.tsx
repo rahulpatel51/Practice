@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -23,7 +24,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-import { DashboardLayout } from "@/components/dashboard-layout"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +49,123 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Separator } from "@/components/ui/separator"
 import { format } from "date-fns"
 
+// Navigation items (can be imported from a shared config file)
+const navItems = [
+  {
+    href: "/dashboard/admin",
+    label: "Dashboard",
+    icon: <Home className="mr-2 h-4 w-4" />,
+  },
+  {
+    href: "/dashboard/admin/students",
+    label: "Students",
+    icon: <Users className="mr-2 h-4 w-4" />,
+  },
+  {
+    href: "/dashboard/admin/rooms",
+    label: "Rooms",
+    icon: <Building className="mr-2 h-4 w-4" />,
+  },
+  {
+    href: "/dashboard/admin/payments",
+    label: "Payments",
+    icon: <CreditCard className="mr-2 h-4 w-4" />,
+  },
+  {
+    href: "/dashboard/admin/complaints",
+    label: "Complaints",
+    icon: <MessageSquare className="mr-2 h-4 w-4" />,
+  },
+  {
+    href: "/dashboard/admin/leave",
+    label: "Leave Applications",
+    icon: <FileText className="mr-2 h-4 w-4" />,
+    active: true
+  },
+  {
+    href: "/dashboard/admin/settings",
+    label: "Settings",
+    icon: <Settings className="mr-2 h-4 w-4" />,
+  },
+]
+
+// Mock data for leave applications
+const leaveApplications = [
+  {
+    id: "L-2023-001",
+    studentId: "STU001",
+    studentName: "John Doe",
+    room: "203, Block A",
+    type: "Weekend",
+    fromDate: "2023-04-14",
+    toDate: "2023-04-16",
+    reason: "Going home for the weekend",
+    appliedOn: "2023-04-10",
+    status: "Approved",
+    approvedBy: "Dr. Rajesh Kumar",
+    comments: [{ user: "Warden", text: "Approved. Make sure to return on time.", date: "2023-04-11" }],
+  },
+  {
+    id: "L-2023-002",
+    studentId: "STU003",
+    studentName: "Rahul Singh",
+    room: "203, Block A",
+    type: "Medical",
+    fromDate: "2023-03-05",
+    toDate: "2023-03-08",
+    reason: "Need to visit home for medical treatment",
+    appliedOn: "2023-03-03",
+    status: "Rejected",
+    approvedBy: "Dr. Rajesh Kumar",
+    comments: [
+      { user: "Warden", text: "Rejected. Medical leave requires proper documentation.", date: "2023-03-04" },
+      { user: "Student", text: "I don't have a certificate yet as I need to visit the doctor", date: "2023-03-04" },
+    ],
+  },
+  {
+    id: "L-2023-003",
+    studentId: "STU002",
+    studentName: "Priya Sharma",
+    room: "105, Block A",
+    type: "Academic",
+    fromDate: "2023-05-10",
+    toDate: "2023-05-12",
+    reason: "Attending a conference at Delhi University",
+    appliedOn: "2023-05-01",
+    status: "Pending",
+    approvedBy: null,
+    comments: [],
+  },
+  {
+    id: "L-2023-004",
+    studentId: "STU004",
+    studentName: "Ananya Patel",
+    room: "304, Block B",
+    type: "Personal",
+    fromDate: "2023-04-20",
+    toDate: "2023-04-22",
+    reason: "Family function at home",
+    appliedOn: "2023-04-15",
+    status: "Pending",
+    approvedBy: null,
+    comments: [],
+  },
+  {
+    id: "L-2023-005",
+    studentId: "STU006",
+    studentName: "Neha Gupta",
+    room: "106, Block A",
+    type: "Night Out",
+    fromDate: "2023-04-18",
+    toDate: "2023-04-18",
+    reason: "Going for a cultural event in the city",
+    appliedOn: "2023-04-16",
+    status: "Pending",
+    approvedBy: null,
+    comments: [],
+  },
+]
+
 export default function AdminLeavePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -56,123 +173,6 @@ export default function AdminLeavePage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [approvalComment, setApprovalComment] = useState("")
   const [rejectionReason, setRejectionReason] = useState("")
-
-  const navItems = [
-    {
-      href: "/dashboard/admin",
-      label: "Dashboard",
-      icon: <Home className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/admin/students",
-      label: "Students",
-      icon: <Users className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/admin/rooms",
-      label: "Rooms",
-      icon: <Building className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/admin/payments",
-      label: "Payments",
-      icon: <CreditCard className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/admin/complaints",
-      label: "Complaints",
-      icon: <MessageSquare className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/admin/leave",
-      label: "Leave Applications",
-      icon: <FileText className="mr-2 h-4 w-4" />,
-      active: true
-    },
-    {
-      href: "/dashboard/admin/settings",
-      label: "Settings",
-      icon: <Settings className="mr-2 h-4 w-4" />,
-    },
-  ]
-
-  // Mock data for leave applications
-  const leaveApplications = [
-    {
-      id: "L-2023-001",
-      studentId: "STU001",
-      studentName: "John Doe",
-      room: "203, Block A",
-      type: "Weekend",
-      fromDate: "2023-04-14",
-      toDate: "2023-04-16",
-      reason: "Going home for the weekend",
-      appliedOn: "2023-04-10",
-      status: "Approved",
-      approvedBy: "Dr. Rajesh Kumar",
-      comments: [{ user: "Warden", text: "Approved. Make sure to return on time.", date: "2023-04-11" }],
-    },
-    {
-      id: "L-2023-002",
-      studentId: "STU003",
-      studentName: "Rahul Singh",
-      room: "203, Block A",
-      type: "Medical",
-      fromDate: "2023-03-05",
-      toDate: "2023-03-08",
-      reason: "Need to visit home for medical treatment",
-      appliedOn: "2023-03-03",
-      status: "Rejected",
-      approvedBy: "Dr. Rajesh Kumar",
-      comments: [
-        { user: "Warden", text: "Rejected. Medical leave requires proper documentation.", date: "2023-03-04" },
-        { user: "Student", text: "I don't have a certificate yet as I need to visit the doctor", date: "2023-03-04" },
-        { user: "Warden", text: "Rejected. Medical leave requires proper documentation.", date: "2023-03-04" },
-      ],
-    },
-    {
-      id: "L-2023-003",
-      studentId: "STU002",
-      studentName: "Priya Sharma",
-      room: "105, Block A",
-      type: "Academic",
-      fromDate: "2023-05-10",
-      toDate: "2023-05-12",
-      reason: "Attending a conference at Delhi University",
-      appliedOn: "2023-05-01",
-      status: "Pending",
-      approvedBy: null,
-      comments: [],
-    },
-    {
-      id: "L-2023-004",
-      studentId: "STU004",
-      studentName: "Ananya Patel",
-      room: "304, Block B",
-      type: "Personal",
-      fromDate: "2023-04-20",
-      toDate: "2023-04-22",
-      reason: "Family function at home",
-      appliedOn: "2023-04-15",
-      status: "Pending",
-      approvedBy: null,
-      comments: [],
-    },
-    {
-      id: "L-2023-005",
-      studentId: "STU006",
-      studentName: "Neha Gupta",
-      room: "106, Block A",
-      type: "Night Out",
-      fromDate: "2023-04-18",
-      toDate: "2023-04-18",
-      reason: "Going for a cultural event in the city",
-      appliedOn: "2023-04-16",
-      status: "Pending",
-      approvedBy: null,
-      comments: [],
-    },
-  ]
 
   // Filter leave applications based on search term and filters
   const filteredLeaveApplications = leaveApplications.filter((application) => {
@@ -230,6 +230,7 @@ export default function AdminLeavePage() {
       navItems={navItems}
     >
       <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-6">
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Leave Application Management</h1>
@@ -237,76 +238,71 @@ export default function AdminLeavePage() {
           </div>
         </div>
 
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Applications</p>
-                  <h3 className="text-2xl font-bold mt-1">{totalApplications}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">This semester</p>
-                </div>
-                <div className="bg-primary/10 p-3 rounded-full">
-                  <FileText className="h-6 w-6 text-primary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending</p>
-                  <h3 className="text-2xl font-bold mt-1">{pendingApplications}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Requires action</p>
-                </div>
-                <div className="bg-yellow-100 p-3 rounded-full">
-                  <FileText className="h-6 w-6 text-yellow-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Approved</p>
-                  <h3 className="text-2xl font-bold mt-1">{approvedApplications}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Completed</p>
-                </div>
-                <div className="bg-green-100 p-3 rounded-full">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Rejected</p>
-                  <h3 className="text-2xl font-bold mt-1">{rejectedApplications}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">Not approved</p>
-                </div>
-                <div className="bg-red-100 p-3 rounded-full">
-                  <X className="h-6 w-6 text-red-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard 
+            title="Total Applications"
+            value={totalApplications.toString()}
+            description="This semester"
+            icon={<FileText className="h-5 w-5" />}
+            color="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300"
+          />
+          
+          <StatCard 
+            title="Pending"
+            value={pendingApplications.toString()}
+            description="Requires action"
+            icon={<FileText className="h-5 w-5" />}
+            color="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300"
+          />
+          
+          <StatCard 
+            title="Approved"
+            value={approvedApplications.toString()}
+            description="Completed"
+            icon={<CheckCircle className="h-5 w-5" />}
+            color="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300"
+          />
+          
+          <StatCard 
+            title="Rejected"
+            value={rejectedApplications.toString()}
+            description="Not approved"
+            icon={<X className="h-5 w-5" />}
+            color="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300"
+          />
         </div>
 
+        {/* Main Content Tabs */}
         <Tabs defaultValue="all" className="w-full">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <TabsList>
-              <TabsTrigger value="all">All Applications</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="rejected">Rejected</TabsTrigger>
+            <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 h-auto">
+              <TabsTrigger 
+                value="all" 
+                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 px-3 py-2 rounded-lg text-sm"
+              >
+                All Applications
+              </TabsTrigger>
+              <TabsTrigger 
+                value="pending" 
+                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 px-3 py-2 rounded-lg text-sm"
+              >
+                Pending
+              </TabsTrigger>
+              <TabsTrigger 
+                value="approved" 
+                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 px-3 py-2 rounded-lg text-sm"
+              >
+                Approved
+              </TabsTrigger>
+              <TabsTrigger 
+                value="rejected" 
+                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 px-3 py-2 rounded-lg text-sm"
+              >
+                Rejected
+              </TabsTrigger>
             </TabsList>
+            
             <div className="flex items-center gap-2 w-full md:w-auto">
               <div className="relative flex-1 md:flex-none md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -321,6 +317,7 @@ export default function AdminLeavePage() {
                   }}
                 />
               </div>
+              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-2">
@@ -377,15 +374,17 @@ export default function AdminLeavePage() {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
+              
               <Button variant="outline" size="icon" className="hidden sm:flex">
                 <Download size={16} />
               </Button>
             </div>
           </div>
 
+          {/* All Applications Tab */}
           <TabsContent value="all">
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader className="p-4 sm:p-6 pt-0">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
                     <CardTitle>All Leave Applications</CardTitle>
@@ -564,6 +563,7 @@ export default function AdminLeavePage() {
             </Card>
           </TabsContent>
 
+          {/* Pending Applications Tab */}
           <TabsContent value="pending">
             <Card>
               <CardHeader className="pb-3">
@@ -577,126 +577,23 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Pending")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="outline">Pending</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
-                            </p>
-                          </div>
-                          <div className="mt-2 md:mt-0">
-                            <p className="text-sm">
-                              <span className="font-medium">Student:</span> {application.studentName} (
-                              {application.room})
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
-                          </div>
-                        </div>
-
-                        <p className="text-sm mb-4">
-                          <span className="font-medium">Reason: </span>
-                          {application.reason}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                <CheckCircle className="h-4 w-4" />
-                                <span>Approve</span>
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[500px]">
-                              <DialogHeader>
-                                <DialogTitle>Approve Leave Application</DialogTitle>
-                                <DialogDescription>
-                                  Approve this leave application and add a comment if needed
-                                </DialogDescription>
-                              </DialogHeader>
-                              <Separator />
-                              <div className="grid gap-4 py-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="comment">Comment (Optional)</Label>
-                                  <Textarea 
-                                    id="comment" 
-                                    placeholder="Add a comment for the student" 
-                                    rows={3}
-                                    value={approvalComment}
-                                    onChange={(e) => setApprovalComment(e.target.value)}
-                                  />
-                                </div>
-                              </div>
-                              <Separator />
-                              <DialogFooter>
-                                <Button variant="outline">Cancel</Button>
-                                <Button onClick={() => handleApprove(application.id)}>Approve Leave</Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                <X className="h-4 w-4" />
-                                <span>Reject</span>
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[500px]">
-                              <DialogHeader>
-                                <DialogTitle>Reject Leave Application</DialogTitle>
-                                <DialogDescription>
-                                  Reject this leave application and provide a reason
-                                </DialogDescription>
-                              </DialogHeader>
-                              <Separator />
-                              <div className="grid gap-4 py-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="reason">Reason for Rejection</Label>
-                                  <Textarea
-                                    id="reason"
-                                    placeholder="Provide a reason for rejecting this application"
-                                    rows={3}
-                                    value={rejectionReason}
-                                    onChange={(e) => setRejectionReason(e.target.value)}
-                                  />
-                                </div>
-                              </div>
-                              <Separator />
-                              <DialogFooter>
-                                <Button variant="outline">Cancel</Button>
-                                <Button variant="destructive" onClick={() => handleReject(application.id)}>
-                                  Reject Leave
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-
-                          <Button variant="outline" size="sm" className="flex items-center gap-2">
-                            <Eye className="h-4 w-4" />
-                            <span>View Details</span>
-                          </Button>
-                        </div>
-                      </div>
+                      <LeaveApplicationCard 
+                        key={application.id}
+                        application={application}
+                        onApprove={() => handleApprove(application.id)}
+                        onReject={() => handleReject(application.id)}
+                        approvalComment={approvalComment}
+                        onApprovalCommentChange={setApprovalComment}
+                        rejectionReason={rejectionReason}
+                        onRejectionReasonChange={setRejectionReason}
+                      />
                     ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Approved Applications Tab */}
           <TabsContent value="approved">
             <Card>
               <CardHeader className="pb-3">
@@ -710,78 +607,18 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Approved")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="default">Approved</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
-                            </p>
-                          </div>
-                          <div className="mt-2 md:mt-0">
-                            <p className="text-sm">
-                              <span className="font-medium">Student:</span> {application.studentName} (
-                              {application.room})
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
-                          </div>
-                        </div>
-
-                        <p className="text-sm mb-4">
-                          <span className="font-medium">Reason: </span>
-                          {application.reason}
-                        </p>
-
-                        <p className="text-sm mb-4">
-                          <span className="font-medium">Approved by: </span>
-                          {application.approvedBy}
-                        </p>
-
-                        {application.comments.length > 0 && (
-                          <div className="mb-4">
-                            <p className="text-sm font-medium mb-2">Comments:</p>
-                            <div className="space-y-2 pl-4 border-l-2">
-                              {application.comments.map((comment, index) => (
-                                <div key={index} className="text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">{comment.user}:</span>
-                                    <span className="text-xs text-muted-foreground">
-                                      {format(new Date(comment.date), "dd MMM yyyy")}
-                                    </span>
-                                  </div>
-                                  <p>{comment.text}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex flex-wrap gap-2">
-                          <Button variant="outline" size="sm" className="flex items-center gap-2">
-                            <Eye className="h-4 w-4" />
-                            <span>View Details</span>
-                          </Button>
-                        </div>
-                      </div>
+                      <LeaveApplicationCard 
+                        key={application.id}
+                        application={application}
+                        viewOnly={true}
+                      />
                     ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Rejected Applications Tab */}
           <TabsContent value="rejected">
             <Card>
               <CardHeader className="pb-3">
@@ -795,72 +632,11 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Rejected")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="destructive">Rejected</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
-                            </p>
-                          </div>
-                          <div className="mt-2 md:mt-0">
-                            <p className="text-sm">
-                              <span className="font-medium">Student:</span> {application.studentName} (
-                              {application.room})
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
-                          </div>
-                        </div>
-
-                        <p className="text-sm mb-4">
-                          <span className="font-medium">Reason: </span>
-                          {application.reason}
-                        </p>
-
-                        <p className="text-sm mb-4">
-                          <span className="font-medium">Rejected by: </span>
-                          {application.approvedBy}
-                        </p>
-
-                        {application.comments.length > 0 && (
-                          <div className="mb-4">
-                            <p className="text-sm font-medium mb-2">Comments:</p>
-                            <div className="space-y-2 pl-4 border-l-2">
-                              {application.comments.map((comment, index) => (
-                                <div key={index} className="text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">{comment.user}:</span>
-                                    <span className="text-xs text-muted-foreground">
-                                      {format(new Date(comment.date), "dd MMM yyyy")}
-                                    </span>
-                                  </div>
-                                  <p>{comment.text}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex flex-wrap gap-2">
-                          <Button variant="outline" size="sm" className="flex items-center gap-2">
-                            <Eye className="h-4 w-4" />
-                            <span>View Details</span>
-                          </Button>
-                        </div>
-                      </div>
+                      <LeaveApplicationCard 
+                        key={application.id}
+                        application={application}
+                        viewOnly={true}
+                      />
                     ))}
                 </div>
               </CardContent>
@@ -869,5 +645,209 @@ export default function AdminLeavePage() {
         </Tabs>
       </div>
     </DashboardLayout>
+  )
+}
+
+// Stat Card Component (Reused from previous dashboard)
+interface StatCardProps {
+  title: string;
+  value: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  border?: string;
+  hover?: string;
+}
+
+function StatCard({ title, value, description, icon, color }: StatCardProps) {
+  return (
+    <Card className="border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <h3 className="text-2xl font-bold mt-1">{value}</h3>
+            <p className="text-xs text-muted-foreground mt-1">{description}</p>
+          </div>
+          <div className={`${color} p-3 rounded-full`}>
+            {icon}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Leave Application Card Component
+function LeaveApplicationCard({
+  application,
+  viewOnly = false,
+  onApprove,
+  onReject,
+  approvalComment,
+  onApprovalCommentChange,
+  rejectionReason,
+  onRejectionReasonChange,
+}: {
+  application: any;
+  viewOnly?: boolean;
+  onApprove?: () => void;
+  onReject?: () => void;
+  approvalComment?: string;
+  onApprovalCommentChange?: (value: string) => void;
+  rejectionReason?: string;
+  onRejectionReasonChange?: (value: string) => void;
+}) {
+  return (
+    <div className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold">{application.type} Leave</h3>
+            <Badge variant={
+              application.status === "Approved" ? "default" :
+              application.status === "Rejected" ? "destructive" : "outline"
+            }>
+              {application.status}
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
+          </p>
+        </div>
+        <div className="mt-2 md:mt-0">
+          <p className="text-sm">
+            <span className="font-medium">Student:</span> {application.studentName} ({application.room})
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">From Date</p>
+          <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">To Date</p>
+          <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
+        </div>
+      </div>
+
+      <p className="text-sm mb-4">
+        <span className="font-medium">Reason: </span>
+        {application.reason}
+      </p>
+
+      {application.approvedBy && (
+        <p className="text-sm mb-4">
+          <span className="font-medium">
+            {application.status === "Approved" ? "Approved by: " : "Rejected by: "}
+          </span>
+          {application.approvedBy}
+        </p>
+      )}
+
+      {application.comments.length > 0 && (
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2">Comments:</p>
+          <div className="space-y-2 pl-4 border-l-2">
+            {application.comments.map((comment: any, index: number) => (
+              <div key={index} className="text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{comment.user}:</span>
+                  <span className="text-xs text-muted-foreground">
+                    {format(new Date(comment.date), "dd MMM yyyy")}
+                  </span>
+                </div>
+                <p>{comment.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" size="sm" className="flex items-center gap-2">
+          <Eye className="h-4 w-4" />
+          <span>View Details</span>
+        </Button>
+
+        {!viewOnly && (
+          <>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Approve</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Approve Leave Application</DialogTitle>
+                  <DialogDescription>
+                    Approve this leave application and add a comment if needed
+                  </DialogDescription>
+                </DialogHeader>
+                <Separator />
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comment">Comment (Optional)</Label>
+                    <Textarea 
+                      id="comment" 
+                      placeholder="Add a comment for the student" 
+                      rows={3}
+                      value={approvalComment}
+                      onChange={(e) => onApprovalCommentChange?.(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Separator />
+                <DialogFooter>
+                  <Button variant="outline">Cancel</Button>
+                  <Button onClick={onApprove}>Approve Leave</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <X className="h-4 w-4" />
+                  <span>Reject</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Reject Leave Application</DialogTitle>
+                  <DialogDescription>
+                    Reject this leave application and provide a reason
+                  </DialogDescription>
+                </DialogHeader>
+                <Separator />
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reason">Reason for Rejection</Label>
+                    <Textarea
+                      id="reason"
+                      placeholder="Provide a reason for rejecting this application"
+                      rows={3}
+                      value={rejectionReason}
+                      onChange={(e) => onRejectionReasonChange?.(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Separator />
+                <DialogFooter>
+                  <Button variant="outline">Cancel</Button>
+                  <Button variant="destructive" onClick={onReject}>
+                    Reject Leave
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
