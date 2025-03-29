@@ -20,6 +20,8 @@ import {
   MessageSquare,
   FileText,
   Settings,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import {
@@ -43,9 +45,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Separator } from "@/components/ui/separator"
+import { format } from "date-fns"
 
 export default function AdminLeavePage() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [typeFilter, setTypeFilter] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("all")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [approvalComment, setApprovalComment] = useState("")
+  const [rejectionReason, setRejectionReason] = useState("")
 
   const navItems = [
     {
@@ -77,6 +87,7 @@ export default function AdminLeavePage() {
       href: "/dashboard/admin/leave",
       label: "Leave Applications",
       icon: <FileText className="mr-2 h-4 w-4" />,
+      active: true
     },
     {
       href: "/dashboard/admin/settings",
@@ -163,14 +174,27 @@ export default function AdminLeavePage() {
     },
   ]
 
-  // Filter leave applications based on search term
-  const filteredLeaveApplications = leaveApplications.filter(
-    (application) =>
+  // Filter leave applications based on search term and filters
+  const filteredLeaveApplications = leaveApplications.filter((application) => {
+    const matchesSearch = 
       application.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       application.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       application.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       application.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      application.status.toLowerCase().includes(searchTerm.toLowerCase()),
+      application.status.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesType = typeFilter === "all" || application.type.toLowerCase().includes(typeFilter.toLowerCase())
+    const matchesStatus = statusFilter === "all" || application.status.toLowerCase() === statusFilter.toLowerCase()
+    
+    return matchesSearch && matchesType && matchesStatus
+  })
+
+  // Pagination
+  const itemsPerPage = 5
+  const totalPages = Math.ceil(filteredLeaveApplications.length / itemsPerPage)
+  const paginatedApplications = filteredLeaveApplications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   )
 
   // Leave application statistics
@@ -178,6 +202,24 @@ export default function AdminLeavePage() {
   const pendingApplications = leaveApplications.filter((app) => app.status === "Pending").length
   const approvedApplications = leaveApplications.filter((app) => app.status === "Approved").length
   const rejectedApplications = leaveApplications.filter((app) => app.status === "Rejected").length
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage)
+    }
+  }
+
+  const handleApprove = (applicationId: string) => {
+    // In a real app, you would update the application status
+    console.log(`Approving application ${applicationId} with comment:`, approvalComment)
+    setApprovalComment("")
+  }
+
+  const handleReject = (applicationId: string) => {
+    // In a real app, you would update the application status
+    console.log(`Rejecting application ${applicationId} with reason:`, rejectionReason)
+    setRejectionReason("")
+  }
 
   return (
     <DashboardLayout
@@ -187,21 +229,22 @@ export default function AdminLeavePage() {
       userAvatar="AD"
       navItems={navItems}
     >
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
+      <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Leave Application Management</h1>
             <p className="text-muted-foreground">View and manage student leave applications</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Applications</p>
                   <h3 className="text-2xl font-bold mt-1">{totalApplications}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">This semester</p>
                 </div>
                 <div className="bg-primary/10 p-3 rounded-full">
                   <FileText className="h-6 w-6 text-primary" />
@@ -210,12 +253,13 @@ export default function AdminLeavePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Pending</p>
                   <h3 className="text-2xl font-bold mt-1">{pendingApplications}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Requires action</p>
                 </div>
                 <div className="bg-yellow-100 p-3 rounded-full">
                   <FileText className="h-6 w-6 text-yellow-600" />
@@ -224,12 +268,13 @@ export default function AdminLeavePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Approved</p>
                   <h3 className="text-2xl font-bold mt-1">{approvedApplications}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Completed</p>
                 </div>
                 <div className="bg-green-100 p-3 rounded-full">
                   <CheckCircle className="h-6 w-6 text-green-600" />
@@ -238,12 +283,13 @@ export default function AdminLeavePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Rejected</p>
                   <h3 className="text-2xl font-bold mt-1">{rejectedApplications}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Not approved</p>
                 </div>
                 <div className="bg-red-100 p-3 rounded-full">
                   <X className="h-6 w-6 text-red-600" />
@@ -254,113 +300,159 @@ export default function AdminLeavePage() {
         </div>
 
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="all">All Applications</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-          </TabsList>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <TabsList>
+              <TabsTrigger value="all">All Applications</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="approved">Approved</TabsTrigger>
+              <TabsTrigger value="rejected">Rejected</TabsTrigger>
+            </TabsList>
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <div className="relative flex-1 md:flex-none md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search applications..."
+                  className="pl-9 w-full"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                />
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Filter size={16} />
+                    <span className="hidden sm:inline">Filters</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <div className="p-2 space-y-2">
+                    <div className="space-y-1">
+                      <Label htmlFor="type-filter">Leave Type</Label>
+                      <Select
+                        value={typeFilter}
+                        onValueChange={(value) => {
+                          setTypeFilter(value)
+                          setCurrentPage(1)
+                        }}
+                      >
+                        <SelectTrigger id="type-filter" className="h-8">
+                          <SelectValue placeholder="All Types" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="weekend">Weekend</SelectItem>
+                          <SelectItem value="medical">Medical</SelectItem>
+                          <SelectItem value="academic">Academic</SelectItem>
+                          <SelectItem value="personal">Personal</SelectItem>
+                          <SelectItem value="night-out">Night Out</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="status-filter">Status</Label>
+                      <Select
+                        value={statusFilter}
+                        onValueChange={(value) => {
+                          setStatusFilter(value)
+                          setCurrentPage(1)
+                        }}
+                      >
+                        <SelectTrigger id="status-filter" className="h-8">
+                          <SelectValue placeholder="All Statuses" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="approved">Approved</SelectItem>
+                          <SelectItem value="rejected">Rejected</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="outline" size="icon" className="hidden sm:flex">
+                <Download size={16} />
+              </Button>
+            </div>
+          </div>
 
           <TabsContent value="all">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle>All Leave Applications</CardTitle>
-                <CardDescription>Total of {leaveApplications.length} leave applications in the system</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="search"
-                        placeholder="Search applications..."
-                        className="pl-8 w-full md:w-[300px]"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <Select>
-                      <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="Filter by type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="weekend">Weekend</SelectItem>
-                        <SelectItem value="medical">Medical</SelectItem>
-                        <SelectItem value="academic">Academic</SelectItem>
-                        <SelectItem value="personal">Personal</SelectItem>
-                        <SelectItem value="night-out">Night Out</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select>
-                      <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="approved">Approved</SelectItem>
-                        <SelectItem value="rejected">Rejected</SelectItem>
-                      </SelectContent>
-                    </Select>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <CardTitle>All Leave Applications</CardTitle>
+                    <CardDescription>
+                      Showing {filteredLeaveApplications.length} application records
+                    </CardDescription>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Filter size={16} />
-                      <span className="hidden sm:inline">Advanced Filters</span>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={currentPage <= 1}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Download size={16} />
-                      <span className="hidden sm:inline">Export</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                    >
+                      <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-slate-50">
-                          <th className="text-left p-3 font-medium">ID</th>
-                          <th className="text-left p-3 font-medium">Student</th>
-                          <th className="text-left p-3 font-medium">Type</th>
-                          <th className="text-left p-3 font-medium">From</th>
-                          <th className="text-left p-3 font-medium">To</th>
-                          <th className="text-left p-3 font-medium">Applied On</th>
-                          <th className="text-left p-3 font-medium">Status</th>
-                          <th className="text-left p-3 font-medium">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredLeaveApplications.map((application) => (
-                          <tr key={application.id} className="border-t hover:bg-slate-50">
-                            <td className="p-3">{application.id}</td>
-                            <td className="p-3">
-                              <div>
-                                <div>{application.studentName}</div>
-                                <div className="text-xs text-muted-foreground">{application.room}</div>
-                              </div>
-                            </td>
-                            <td className="p-3">{application.type}</td>
-                            <td className="p-3">{application.fromDate}</td>
-                            <td className="p-3">{application.toDate}</td>
-                            <td className="p-3">{application.appliedOn}</td>
-                            <td className="p-3">
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Student</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>From</TableHead>
+                        <TableHead>To</TableHead>
+                        <TableHead>Applied On</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedApplications.length > 0 ? (
+                        paginatedApplications.map((application) => (
+                          <TableRow key={application.id} className="hover:bg-muted/50">
+                            <TableCell className="font-medium">{application.id}</TableCell>
+                            <TableCell>
+                              <div className="font-medium">{application.studentName}</div>
+                              <div className="text-xs text-muted-foreground">{application.room}</div>
+                            </TableCell>
+                            <TableCell>{application.type}</TableCell>
+                            <TableCell>{format(new Date(application.fromDate), "dd MMM yyyy")}</TableCell>
+                            <TableCell>{format(new Date(application.toDate), "dd MMM yyyy")}</TableCell>
+                            <TableCell>{format(new Date(application.appliedOn), "dd MMM yyyy")}</TableCell>
+                            <TableCell>
                               <Badge
-                                variant="outline"
-                                className={
-                                  application.status === "Approved"
-                                    ? "bg-green-100 text-green-800 hover:bg-green-100"
-                                    : application.status === "Rejected"
-                                      ? "bg-red-100 text-red-800 hover:bg-red-100"
-                                      : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                                variant={
+                                  application.status === "Approved" ? "default" :
+                                  application.status === "Rejected" ? "destructive" : "outline"
                                 }
                               >
                                 {application.status}
                               </Badge>
-                            </td>
-                            <td className="p-3">
+                            </TableCell>
+                            <TableCell className="text-right">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="icon">
@@ -371,48 +463,102 @@ export default function AdminLeavePage() {
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                   <DropdownMenuSeparator />
-                                  <DropdownMenuItem className="flex items-center gap-2">
+                                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
                                     <Eye className="h-4 w-4" />
                                     <span>View Details</span>
                                   </DropdownMenuItem>
                                   {application.status === "Pending" && (
                                     <>
-                                      <DropdownMenuItem className="flex items-center gap-2">
-                                        <CheckCircle className="h-4 w-4" />
-                                        <span>Approve</span>
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem className="flex items-center gap-2">
-                                        <X className="h-4 w-4" />
-                                        <span>Reject</span>
-                                      </DropdownMenuItem>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
+                                            <CheckCircle className="h-4 w-4" />
+                                            <span>Approve</span>
+                                          </DropdownMenuItem>
+                                        </DialogTrigger>
+                                        <DialogContent className="sm:max-w-[500px]">
+                                          <DialogHeader>
+                                            <DialogTitle>Approve Leave Application</DialogTitle>
+                                            <DialogDescription>
+                                              Approve this leave application and add a comment if needed
+                                            </DialogDescription>
+                                          </DialogHeader>
+                                          <Separator />
+                                          <div className="grid gap-4 py-4">
+                                            <div className="space-y-2">
+                                              <Label htmlFor="comment">Comment (Optional)</Label>
+                                              <Textarea 
+                                                id="comment" 
+                                                placeholder="Add a comment for the student" 
+                                                rows={3}
+                                                value={approvalComment}
+                                                onChange={(e) => setApprovalComment(e.target.value)}
+                                              />
+                                            </div>
+                                          </div>
+                                          <Separator />
+                                          <DialogFooter>
+                                            <Button variant="outline">Cancel</Button>
+                                            <Button onClick={() => handleApprove(application.id)}>Approve Leave</Button>
+                                          </DialogFooter>
+                                        </DialogContent>
+                                      </Dialog>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
+                                            <X className="h-4 w-4" />
+                                            <span>Reject</span>
+                                          </DropdownMenuItem>
+                                        </DialogTrigger>
+                                        <DialogContent className="sm:max-w-[500px]">
+                                          <DialogHeader>
+                                            <DialogTitle>Reject Leave Application</DialogTitle>
+                                            <DialogDescription>
+                                              Reject this leave application and provide a reason
+                                            </DialogDescription>
+                                          </DialogHeader>
+                                          <Separator />
+                                          <div className="grid gap-4 py-4">
+                                            <div className="space-y-2">
+                                              <Label htmlFor="reason">Reason for Rejection</Label>
+                                              <Textarea
+                                                id="reason"
+                                                placeholder="Provide a reason for rejecting this application"
+                                                rows={3}
+                                                value={rejectionReason}
+                                                onChange={(e) => setRejectionReason(e.target.value)}
+                                              />
+                                            </div>
+                                          </div>
+                                          <Separator />
+                                          <DialogFooter>
+                                            <Button variant="outline">Cancel</Button>
+                                            <Button variant="destructive" onClick={() => handleReject(application.id)}>
+                                              Reject Leave
+                                            </Button>
+                                          </DialogFooter>
+                                        </DialogContent>
+                                      </Dialog>
                                     </>
                                   )}
-                                  <DropdownMenuItem className="flex items-center gap-2">
+                                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
                                     <MessageSquare className="h-4 w-4" />
                                     <span>Add Comment</span>
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {filteredLeaveApplications.length} of {leaveApplications.length} applications
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" disabled>
-                      Previous
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Next
-                    </Button>
-                  </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={8} className="h-24 text-center">
+                            No leave applications found matching your criteria.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
@@ -423,7 +569,7 @@ export default function AdminLeavePage() {
               <CardHeader className="pb-3">
                 <CardTitle>Pending Leave Applications</CardTitle>
                 <CardDescription>
-                  Total of {leaveApplications.filter((app) => app.status === "Pending").length} pending applications
+                  {pendingApplications} applications awaiting your approval
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -431,17 +577,15 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Pending")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                                Pending
-                              </Badge>
+                              <Badge variant="outline">Pending</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {application.appliedOn}
+                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
                             </p>
                           </div>
                           <div className="mt-2 md:mt-0">
@@ -455,11 +599,11 @@ export default function AdminLeavePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{application.fromDate}</p>
+                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
                           </div>
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{application.toDate}</p>
+                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
                           </div>
                         </div>
 
@@ -483,15 +627,23 @@ export default function AdminLeavePage() {
                                   Approve this leave application and add a comment if needed
                                 </DialogDescription>
                               </DialogHeader>
+                              <Separator />
                               <div className="grid gap-4 py-4">
                                 <div className="space-y-2">
                                   <Label htmlFor="comment">Comment (Optional)</Label>
-                                  <Textarea id="comment" placeholder="Add a comment for the student" rows={3} />
+                                  <Textarea 
+                                    id="comment" 
+                                    placeholder="Add a comment for the student" 
+                                    rows={3}
+                                    value={approvalComment}
+                                    onChange={(e) => setApprovalComment(e.target.value)}
+                                  />
                                 </div>
                               </div>
+                              <Separator />
                               <DialogFooter>
                                 <Button variant="outline">Cancel</Button>
-                                <Button>Approve Leave</Button>
+                                <Button onClick={() => handleApprove(application.id)}>Approve Leave</Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -510,6 +662,7 @@ export default function AdminLeavePage() {
                                   Reject this leave application and provide a reason
                                 </DialogDescription>
                               </DialogHeader>
+                              <Separator />
                               <div className="grid gap-4 py-4">
                                 <div className="space-y-2">
                                   <Label htmlFor="reason">Reason for Rejection</Label>
@@ -517,12 +670,17 @@ export default function AdminLeavePage() {
                                     id="reason"
                                     placeholder="Provide a reason for rejecting this application"
                                     rows={3}
+                                    value={rejectionReason}
+                                    onChange={(e) => setRejectionReason(e.target.value)}
                                   />
                                 </div>
                               </div>
+                              <Separator />
                               <DialogFooter>
                                 <Button variant="outline">Cancel</Button>
-                                <Button variant="destructive">Reject Leave</Button>
+                                <Button variant="destructive" onClick={() => handleReject(application.id)}>
+                                  Reject Leave
+                                </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -544,7 +702,7 @@ export default function AdminLeavePage() {
               <CardHeader className="pb-3">
                 <CardTitle>Approved Leave Applications</CardTitle>
                 <CardDescription>
-                  Total of {leaveApplications.filter((app) => app.status === "Approved").length} approved applications
+                  {approvedApplications} applications that have been approved
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -552,17 +710,15 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Approved")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">
-                                Approved
-                              </Badge>
+                              <Badge variant="default">Approved</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {application.appliedOn}
+                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
                             </p>
                           </div>
                           <div className="mt-2 md:mt-0">
@@ -576,11 +732,11 @@ export default function AdminLeavePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{application.fromDate}</p>
+                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
                           </div>
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{application.toDate}</p>
+                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
                           </div>
                         </div>
 
@@ -602,7 +758,9 @@ export default function AdminLeavePage() {
                                 <div key={index} className="text-sm">
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{comment.user}:</span>
-                                    <span className="text-xs text-muted-foreground">{comment.date}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {format(new Date(comment.date), "dd MMM yyyy")}
+                                    </span>
                                   </div>
                                   <p>{comment.text}</p>
                                 </div>
@@ -629,7 +787,7 @@ export default function AdminLeavePage() {
               <CardHeader className="pb-3">
                 <CardTitle>Rejected Leave Applications</CardTitle>
                 <CardDescription>
-                  Total of {leaveApplications.filter((app) => app.status === "Rejected").length} rejected applications
+                  {rejectedApplications} applications that have been rejected
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -637,17 +795,15 @@ export default function AdminLeavePage() {
                   {leaveApplications
                     .filter((application) => application.status === "Rejected")
                     .map((application) => (
-                      <div key={application.id} className="border rounded-lg p-4">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                      <div key={application.id} className="border rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{application.type} Leave</h3>
-                              <Badge variant="outline" className="bg-red-100 text-red-800 hover:bg-red-100">
-                                Rejected
-                              </Badge>
+                              <Badge variant="destructive">Rejected</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {application.id} • Applied on {application.appliedOn}
+                              {application.id} • Applied on {format(new Date(application.appliedOn), "dd MMM yyyy")}
                             </p>
                           </div>
                           <div className="mt-2 md:mt-0">
@@ -661,11 +817,11 @@ export default function AdminLeavePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">From Date</p>
-                            <p className="font-medium">{application.fromDate}</p>
+                            <p className="font-medium">{format(new Date(application.fromDate), "dd MMM yyyy")}</p>
                           </div>
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">To Date</p>
-                            <p className="font-medium">{application.toDate}</p>
+                            <p className="font-medium">{format(new Date(application.toDate), "dd MMM yyyy")}</p>
                           </div>
                         </div>
 
@@ -687,7 +843,9 @@ export default function AdminLeavePage() {
                                 <div key={index} className="text-sm">
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{comment.user}:</span>
-                                    <span className="text-xs text-muted-foreground">{comment.date}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {format(new Date(comment.date), "dd MMM yyyy")}
+                                    </span>
                                   </div>
                                   <p>{comment.text}</p>
                                 </div>
@@ -713,4 +871,3 @@ export default function AdminLeavePage() {
     </DashboardLayout>
   )
 }
-
