@@ -10,6 +10,15 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Hostel Management System",
   description: "A comprehensive hostel management system for educational institutions",
+  icons: {
+    icon: "/logo.png", // /public/logo.png
+    shortcut: "/logo.png", // /public/logo.png
+    apple: "/logo.png", // /public/logo.png
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/logo.png", // /public/logo.png
+    },
+  },
 }
 
 export default function RootLayout({
@@ -28,7 +37,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'
