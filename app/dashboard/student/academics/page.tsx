@@ -185,12 +185,12 @@ export default function academics() {
       userAvatar="JD"
       navItems={studentNavItems}
     >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 py-6">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight dark:text-slate-100">Academic Dashboard</h1>
-            <p className="text-muted-foreground dark:text-slate-400">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Academic Dashboard</h1>
+            <p className="text-sm sm:text-base text-muted-foreground dark:text-slate-300">
               Track your courses, attendance, and academic progress
             </p>
           </div>

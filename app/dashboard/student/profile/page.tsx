@@ -80,14 +80,14 @@ export default function StudentProfilePage() {
       userAvatar="JD"
       navItems={studentNavItems}
     >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 py-6">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight dark:text-slate-100">My Profile</h1>
-          <p className="text-muted-foreground dark:text-slate-400">View and update your personal information</p>
+          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">My Profile</h1>
+          <p className="text-sm sm:text-base text-muted-foreground dark:text-slate-300">View and update your personal information</p>
         </div>
 
         <Tabs defaultValue="personal" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="mb-6 dark:bg-slate-800 dark:border-slate-700">
+          <TabsList className="mb-6 rounded-lg border bg-card text-card-foreground shadow-sm dark:bg-slate-800 dark border-blue-200 dark:border-blue-800">
             <TabsTrigger 
               value="personal" 
               className="dark:data-[state=active]:bg-indigo-600 dark:data-[state=active]:text-white"

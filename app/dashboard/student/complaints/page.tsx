@@ -107,11 +107,11 @@ export default function StudentComplaintsPage() {
       userAvatar="JD"
       navItems={studentNavItems} // Using the imported studentNavItems
     >
-      <div className="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6 py-6">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight dark:text-slate-100">Complaints & Requests</h1>
-            <p className="text-muted-foreground dark:text-slate-400">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Complaints & Requests</h1>
+            <p className="text-sm sm:text-base text-muted-foreground dark:text-slate-300">
               Submit and track your complaints and maintenance requests
             </p>
           </div>

@@ -87,10 +87,10 @@ export default function StudentPaymentsPage() {
       userAvatar="JD"
       navItems={studentNavItems}
     >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 py-6">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight dark:text-slate-100">Payments</h1>
-          <p className="text-muted-foreground dark:text-slate-400">Manage your hostel and mess fee payments</p>
+          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Payments</h1>
+          <p className="text-sm sm:text-base text-muted-foreground dark:text-slate-300">Manage your hostel and mess fee payments</p>
         </div>
 
         {/* Payment Summary Cards */}
