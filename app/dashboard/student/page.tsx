@@ -4,467 +4,310 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Bell, Calendar, CreditCard, FileText, Home, MessageSquare, Settings, User } from "lucide-react"
+import { Bell, Calendar, CreditCard, FileText, Home, MessageSquare, Settings, User, Phone, Users, Award, BookOpen } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { StudentHeader } from "@/components/student/student-header"
+import { studentNavItems } from "@/components/student/student-nav-items"
 
 export default function StudentDashboard() {
-  const navItems = [
-    {
-      href: "/dashboard/student",
-      label: "Dashboard",
-      icon: <Home className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/student/profile",
-      label: "Profile",
-      icon: <User className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/student/payments",
-      label: "Payments",
-      icon: <CreditCard className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/student/complaints",
-      label: "Complaints",
-      icon: <MessageSquare className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/student/leave",
-      label: "Leave Applications",
-      icon: <FileText className="mr-2 h-4 w-4" />,
-    },
-    {
-      href: "/dashboard/student/settings",
-      label: "Settings",
-      icon: <Settings className="mr-2 h-4 w-4" />,
-    },
-  ]
-
   return (
     <DashboardLayout
       userType="student"
       userName="John Doe"
       userRole="Room 203, Block A"
       userAvatar="JD"
-      navItems={navItems}
+      navItems={studentNavItems}
     >
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Student Dashboard</h1>
-            <p className="text-muted-foreground dark:text-slate-400">Welcome back, John Doe</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon">
-              <Bell className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon">
-              <Calendar className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        <StudentHeader />
 
-        {/* Quick Stats */}
+        {/* Quick Stats - 4 Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="dark:bg-slate-800">
+          {/* Room Number Card */}
+          <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-900/10 border-indigo-200 dark:border-indigo-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Room Number</p>
-                  <h3 className="text-2xl font-bold mt-1">203</h3>
+                  <p className="text-sm font-medium text-indigo-800 dark:text-indigo-200">Room Number</p>
+                  <h3 className="text-2xl font-bold mt-1 text-indigo-900 dark:text-white">203</h3>
                 </div>
-                <div className="bg-primary/10 p-3 rounded-full">
-                  <Home className="h-6 w-6 text-primary" />
+                <div className="bg-indigo-100 dark:bg-indigo-800/50 p-3 rounded-full">
+                  <Home className="h-6 w-6 text-indigo-600 dark:text-indigo-300" />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground dark:text-slate-400 mt-2">Block A, Second Floor</p>
+              <p className="text-xs text-indigo-700 dark:text-indigo-300 mt-2">Block A, Second Floor</p>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-slate-800">
+          {/* Hostel Fee Card */}
+          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-900/10 border-emerald-200 dark:border-emerald-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Hostel Fee</p>
-                  <h3 className="text-2xl font-bold mt-1">₹45,000</h3>
+                  <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">Hostel Fee</p>
+                  <h3 className="text-2xl font-bold mt-1 text-emerald-900 dark:text-white">₹45,000</h3>
                 </div>
-                <div className="bg-green-100 p-3 rounded-full">
-                  <CreditCard className="h-6 w-6 text-green-600" />
+                <div className="bg-emerald-100 dark:bg-emerald-800/50 p-3 rounded-full">
+                  <CreditCard className="h-6 w-6 text-emerald-600 dark:text-emerald-300" />
                 </div>
               </div>
-              <p className="text-xs text-green-600 mt-2">Paid for current semester</p>
+              <p className="text-xs text-emerald-700 dark:text-emerald-300 mt-2">Paid for current semester</p>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-slate-800">
+          {/* Mess Balance Card */}
+          <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-900/10 border-amber-200 dark:border-amber-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Mess Balance</p>
-                  <h3 className="text-2xl font-bold mt-1">₹2,500</h3>
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">Mess Balance</p>
+                  <h3 className="text-2xl font-bold mt-1 text-amber-900 dark:text-white">₹2,500</h3>
                 </div>
-                <div className="bg-yellow-100 p-3 rounded-full">
-                  <CreditCard className="h-6 w-6 text-yellow-600" />
+                <div className="bg-amber-100 dark:bg-amber-800/50 p-3 rounded-full">
+                  <CreditCard className="h-6 w-6 text-amber-600 dark:text-amber-300" />
                 </div>
               </div>
-              <p className="text-xs text-yellow-600 mt-2">Valid until 30 April</p>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-2">Valid until 30 April</p>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-slate-800">
+          {/* Attendance Card */}
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 border-blue-200 dark:border-blue-800">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Attendance</p>
-                  <h3 className="text-2xl font-bold mt-1">92%</h3>
+                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Attendance</p>
+                  <h3 className="text-2xl font-bold mt-1 text-blue-900 dark:text-white">92%</h3>
                 </div>
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <Calendar className="h-6 w-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-800/50 p-3 rounded-full">
+                  <Calendar className="h-6 w-6 text-blue-600 dark:text-blue-300" />
                 </div>
               </div>
-              <p className="text-xs text-blue-600 mt-2">Good standing</p>
+              <p className="text-xs text-blue-700 dark:text-blue-300 mt-2">Good standing</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="notices">Notices</TabsTrigger>
-            <TabsTrigger value="complaints">Complaints</TabsTrigger>
-            <TabsTrigger value="leave">Leave Applications</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 space-y-6">
-                <Card className="dark:bg-slate-800">
-                  <CardHeader>
-                    <CardTitle>Room Information</CardTitle>
-                    <CardDescription className="dark:text-slate-400">
-                      Details about your hostel accommodation
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Room Type</p>
-                          <p className="font-medium">Double Sharing</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Floor</p>
-                          <p className="font-medium">Second Floor</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Block</p>
-                          <p className="font-medium">Block A</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Room Number</p>
-                          <p className="font-medium">203</p>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Roommate</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback>RS</AvatarFallback>
-                          </Avatar>
-                          <p className="font-medium">Rahul Singh</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="dark:bg-slate-800">
-                  <CardHeader>
-                    <CardTitle>Recent Transactions</CardTitle>
-                    <CardDescription className="dark:text-slate-400">Your recent payments and dues</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center gap-4">
-                          <div className="bg-green-100 p-2 rounded-full">
-                            <CreditCard className="h-4 w-4 text-green-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Hostel Fee Payment</p>
-                            <p className="text-sm text-muted-foreground dark:text-slate-400">Jan 15, 2023</p>
-                          </div>
-                        </div>
-                        <p className="font-medium text-green-600">+₹45,000</p>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center gap-4">
-                          <div className="bg-yellow-100 p-2 rounded-full">
-                            <CreditCard className="h-4 w-4 text-yellow-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Mess Fee Payment</p>
-                            <p className="text-sm text-muted-foreground dark:text-slate-400">Jan 20, 2023</p>
-                          </div>
-                        </div>
-                        <p className="font-medium text-yellow-600">+₹12,000</p>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <div className="flex items-center gap-4">
-                          <div className="bg-red-100 p-2 rounded-full">
-                            <CreditCard className="h-4 w-4 text-red-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Late Fee</p>
-                            <p className="text-sm text-muted-foreground dark:text-slate-400">Feb 5, 2023</p>
-                          </div>
-                        </div>
-                        <p className="font-medium text-red-600">-₹500</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+        {/* Information Grid - Room, Events, Contacts, Transactions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Room Information */}
+          <Card className="border-indigo-200 dark:border-indigo-800">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-indigo-800 dark:text-indigo-100">Room Information</CardTitle>
+                <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                  <Home className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
+                </div>
               </div>
-
-              <div className="space-y-6">
-                <Card className="dark:bg-slate-800">
-                  <CardHeader>
-                    <CardTitle>Upcoming Events</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="border rounded-lg p-3">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-primary/10 h-12 w-12 rounded-lg flex items-center justify-center">
-                            <Calendar className="h-6 w-6 text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Cultural Night</p>
-                            <p className="text-sm text-muted-foreground dark:text-slate-400">April 15, 2023</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="border rounded-lg p-3">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-primary/10 h-12 w-12 rounded-lg flex items-center justify-center">
-                            <Calendar className="h-6 w-6 text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Sports Day</p>
-                            <p className="text-sm text-muted-foreground dark:text-slate-400">April 22, 2023</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="dark:bg-slate-800">
-                  <CardHeader>
-                    <CardTitle>Important Contacts</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Warden</p>
-                        <p className="font-medium">Dr. Rajesh Kumar</p>
-                        <p className="text-sm text-muted-foreground dark:text-slate-400">+91 98765 43210</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Hostel Office</p>
-                        <p className="font-medium">Room 101, Admin Block</p>
-                        <p className="text-sm text-muted-foreground dark:text-slate-400">+91 12345 67890</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">Emergency</p>
-                        <p className="font-medium">Security Office</p>
-                        <p className="text-sm text-muted-foreground dark:text-slate-400">+91 45678 90123</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <CardDescription className="text-indigo-600 dark:text-indigo-400">
+                Details about your accommodation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Room Number</p>
+                  <p className="font-medium">203</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Block</p>
+                  <p className="font-medium">A</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Floor</p>
+                  <p className="font-medium">Second</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Type</p>
+                  <p className="font-medium">Double Sharing</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Roommate</p>
+                  <p className="font-medium">Rahul Singh</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Check-in Date</p>
+                  <p className="font-medium">15 Jan 2023</p>
+                </div>
               </div>
-            </div>
-          </TabsContent>
+            </CardContent>
+          </Card>
 
-          <TabsContent value="notices">
-            <Card className="dark:bg-slate-800">
-              <CardHeader>
-                <CardTitle>Hostel Notices</CardTitle>
-                <CardDescription className="dark:text-slate-400">
-                  Important announcements from the administration
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Maintenance Schedule</h3>
-                      <Badge>New</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      The water supply will be interrupted on Sunday, April 10th from 10:00 AM to 2:00 PM due to
-                      maintenance work. Please store water accordingly.
-                    </p>
-                    <p className="text-xs text-muted-foreground dark:text-slate-400">Posted on: April 5, 2023</p>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Hostel Day Celebration</h3>
-                      <Badge variant="outline">Event</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      Annual Hostel Day will be celebrated on April 20th. All students are requested to participate in
-                      the cultural events. Registration for performances is now open.
-                    </p>
-                    <p className="text-xs text-muted-foreground dark:text-slate-400">Posted on: March 25, 2023</p>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Mess Committee Elections</h3>
-                      <Badge variant="outline">Important</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      Elections for the new Mess Committee will be held on April 12th. Interested candidates can submit
-                      their nominations by April 8th.
-                    </p>
-                    <p className="text-xs text-muted-foreground dark:text-slate-400">Posted on: March 20, 2023</p>
+          {/* Upcoming Events */}
+          <Card className="border-teal-200 dark:border-teal-800">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-teal-800 dark:text-teal-100">Upcoming Events</CardTitle>
+                <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+                  <Calendar className="h-5 w-5 text-teal-600 dark:text-teal-300" />
+                </div>
+              </div>
+              <CardDescription className="text-teal-600 dark:text-teal-400">
+                Stay updated with hostel events
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="mt-1 p-2 rounded-lg bg-teal-50 dark:bg-teal-900/20">
+                  <Award className="h-4 w-4 text-teal-600 dark:text-teal-300" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Sports Day</h4>
+                  <p className="text-sm text-muted-foreground">April 15 • 9:00 AM - 5:00 PM</p>
+                  <div className="mt-2 flex gap-2">
+                    <Badge variant="outline" className="text-teal-600 dark:text-teal-300">Main Ground</Badge>
+                    <Badge variant="outline" className="bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-300">Compulsory</Badge>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="complaints">
-            <Card className="dark:bg-slate-800">
-              <CardHeader>
-                <CardTitle>Complaints & Requests</CardTitle>
-                <CardDescription className="dark:text-slate-400">
-                  Track your submitted complaints and requests
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Plumbing Issue in Bathroom</h3>
-                      <Badge variant="outline" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                        In Progress
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      The sink in the common bathroom is leaking. Water is accumulating on the floor.
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground dark:text-slate-400">Submitted on: April 2, 2023</p>
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Wi-Fi Connectivity Issue</h3>
-                      <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">
-                        Resolved
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      Unable to connect to the hostel Wi-Fi network from Room 203. The signal is weak and keeps
-                      disconnecting.
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground dark:text-slate-400">Submitted on: March 15, 2023</p>
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    </div>
-                  </div>
-
-                  <Button className="w-full">Submit New Complaint</Button>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 p-2 rounded-lg bg-teal-50 dark:bg-teal-900/20">
+                  <Users className="h-4 w-4 text-teal-600 dark:text-teal-300" />
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="leave">
-            <Card className="dark:bg-slate-800">
-              <CardHeader>
-                <CardTitle>Leave Applications</CardTitle>
-                <CardDescription className="dark:text-slate-400">Manage your leave requests</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Weekend Leave</h3>
-                      <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">
-                        Approved
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-2">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">From Date</p>
-                        <p className="font-medium">April 14, 2023</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">To Date</p>
-                        <p className="font-medium">April 16, 2023</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      Going home for the weekend.
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground dark:text-slate-400">Submitted on: April 10, 2023</p>
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    </div>
+                <div>
+                  <h4 className="font-medium">Cultural Fest</h4>
+                  <p className="text-sm text-muted-foreground">May 10 • 6:00 PM - 10:00 PM</p>
+                  <div className="mt-2 flex gap-2">
+                    <Badge variant="outline" className="text-teal-600 dark:text-teal-300">Auditorium</Badge>
+                    <Badge variant="outline" className="bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-300">Register Now</Badge>
                   </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">Medical Leave</h3>
-                      <Badge variant="outline" className="bg-red-100 text-red-800 hover:bg-red-100">
-                        Rejected
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-2">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">From Date</p>
-                        <p className="font-medium">March 5, 2023</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground dark:text-slate-400">To Date</p>
-                        <p className="font-medium">March 8, 2023</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground dark:text-slate-400 mb-2">
-                      Need to visit home for medical treatment.
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted-foreground dark:text-slate-400">Submitted on: March 3, 2023</p>
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    </div>
-                  </div>
-
-                  <Button className="w-full">Apply for Leave</Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 p-2 rounded-lg bg-teal-50 dark:bg-teal-900/20">
+                  <BookOpen className="h-4 w-4 text-teal-600 dark:text-teal-300" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Annual Day</h4>
+                  <p className="text-sm text-muted-foreground">June 5 • 4:00 PM - 8:00 PM</p>
+                  <div className="mt-2 flex gap-2">
+                    <Badge variant="outline" className="text-teal-600 dark:text-teal-300">Main Hall</Badge>
+                    <Badge variant="outline" className="bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-300">Formal Dress</Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Important Contacts */}
+          <Card className="border-blue-200 dark:border-blue-800">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-blue-800 dark:text-blue-100">Important Contacts</CardTitle>
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                  <Phone className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                </div>
+              </div>
+              <CardDescription className="text-blue-600 dark:text-blue-400">
+                Reach out for assistance
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-lg transition-colors">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <User className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium">Warden</h4>
+                  <p className="text-sm text-muted-foreground">Dr. Rajesh Kumar</p>
+                </div>
+                <a href="tel:+919876543210" className="font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                  +91 9876543210
+                </a>
+              </div>
+              <div className="flex items-center gap-3 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-lg transition-colors">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <Home className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium">Reception</h4>
+                  <p className="text-sm text-muted-foreground">24/7 Available</p>
+                </div>
+                <a href="tel:+911234567890" className="font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                  +91 1234567890
+                </a>
+              </div>
+              <div className="flex items-center gap-3 p-3 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-lg transition-colors">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <MessageSquare className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium">Security</h4>
+                  <p className="text-sm text-muted-foreground">Emergency</p>
+                </div>
+                <a href="tel:+911122334455" className="font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                  +91 1122334455
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Transactions */}
+          <Card className="border-emerald-200 dark:border-emerald-800">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-emerald-800 dark:text-emerald-100">Recent Transactions</CardTitle>
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+                  <CreditCard className="h-5 w-5 text-emerald-600 dark:text-emerald-300" />
+                </div>
+              </div>
+              <CardDescription className="text-emerald-600 dark:text-emerald-400">
+                Your payment history
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-3 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 rounded-lg transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <Home className="h-5 w-5 text-emerald-600 dark:text-emerald-300" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Hostel Fee</h4>
+                    <p className="text-sm text-muted-foreground">March 1, 2023</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-emerald-600 dark:text-emerald-400">₹45,000</p>
+                  <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-800/30 dark:text-emerald-200">Paid</Badge>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-3 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 rounded-lg transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <CreditCard className="h-5 w-5 text-emerald-600 dark:text-emerald-300" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Mess Fee</h4>
+                    <p className="text-sm text-muted-foreground">March 15, 2023</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-emerald-600 dark:text-emerald-400">₹2,500</p>
+                  <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-800/30 dark:text-emerald-200">Paid</Badge>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-3 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 rounded-lg transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <BookOpen className="h-5 w-5 text-emerald-600 dark:text-emerald-300" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Library Fee</h4>
+                    <p className="text-sm text-muted-foreground">March 20, 2023</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-emerald-600 dark:text-emerald-400">₹1,000</p>
+                  <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-800/30 dark:text-emerald-200">Paid</Badge>
+                </div>
+              </div>
+              <Button variant="outline" className="w-full border-emerald-300 text-emerald-600 dark:border-emerald-600 dark:text-emerald-300">
+                View All Transactions
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   )
 }
-
