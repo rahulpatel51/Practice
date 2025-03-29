@@ -92,7 +92,7 @@ export function DashboardLayout({
                 <div className="mb-4 flex flex-col items-center">
                   <div className="relative h-12 w-12 mb-2">
                     <Image
-                      src="/goel-group-logo.png"
+                      src="/logo.png"
                       alt="Goel Group Logo"
                       width={48}
                       height={48}
